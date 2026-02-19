@@ -55,13 +55,16 @@ export class HttpClient {
       throw new Error("`apiKey` is required");
     }
 
-    if (typeof (options.fetch ?? globalThis.fetch) !== "function") {
+    const resolvedFetch = options.fetch ?? globalThis.fetch;
+
+    if (typeof resolvedFetch !== "function") {
       throw new Error("No fetch implementation available. Pass `fetch` in LinqPartnerClient options.");
     }
 
     this.apiKey = options.apiKey;
     this.baseUrl = normalizeBaseUrl(options.baseUrl ?? DEFAULT_BASE_URL);
-    this.fetchImpl = options.fetch ?? globalThis.fetch;
+    // Some runtimes require fetch to be invoked with the global object as `this`.
+    this.fetchImpl = resolvedFetch.bind(globalThis) as typeof globalThis.fetch;
     this.defaultTimeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.retryOptions = {
       ...DEFAULT_RETRY_OPTIONS,

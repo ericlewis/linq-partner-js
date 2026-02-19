@@ -4,6 +4,29 @@ import { HttpClient } from "../src/http/request";
 import { makeResponse } from "./test-utils";
 
 describe("HttpClient", () => {
+  it("invokes fetch with global this binding", async () => {
+    const fetchLike = vi.fn(function (this: unknown) {
+      if (this !== globalThis) {
+        throw new TypeError("Illegal invocation: function called with incorrect this reference");
+      }
+
+      return Promise.resolve(makeResponse(200, { ok: true }));
+    });
+
+    const client = new HttpClient({
+      apiKey: "test-key",
+      fetch: fetchLike as unknown as typeof fetch
+    });
+
+    const result = await client.request<{ ok: boolean }>({
+      method: "GET",
+      path: "/v3/chats"
+    });
+
+    expect(result).toEqual({ ok: true });
+    expect(fetchLike).toHaveBeenCalledTimes(1);
+  });
+
   it("sends auth header and query parameters", async () => {
     const fetchMock = vi.fn(async () => makeResponse(200, { ok: true }));
     const client = new HttpClient({
