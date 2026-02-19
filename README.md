@@ -23,7 +23,7 @@ const chats = await client.chats.list({ from: "+12223334444" });
 ## Webhook verification
 
 ```ts
-import { verifyWebhookSignature } from "linq-partner-js";
+import { verifyWebhookSignature } from "@ericlewis/linq-partner-js";
 
 const ok = await verifyWebhookSignature({
   signingSecret: process.env.LINQ_WEBHOOK_SECRET!,
@@ -71,8 +71,7 @@ git push origin v0.1.0
 - Runs typecheck, tests, and build.
 - Verifies tag version matches `package.json` version.
 - Publishes to GitHub Packages (`npm.pkg.github.com`) as `@ericlewis/linq-partner-js`.
-- Creates a GitHub Release and uploads:
-  - packed npm artifact (`.tgz`)
+- Creates a GitHub Release and uploads the packed npm artifact (`.tgz`).
   - `openapi/v3-reference.yaml`
 
 ### Notes

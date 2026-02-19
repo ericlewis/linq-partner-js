@@ -15,8 +15,7 @@
     }
   },
   "files": [
-    "dist",
-    "openapi/v3-reference.yaml"
+    "dist"
   ],
   "scripts": {
     "generate:types": "node ./scripts/generate-types.mjs",
