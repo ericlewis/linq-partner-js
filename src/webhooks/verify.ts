@@ -66,20 +66,21 @@ function normalizeNow(now?: number | Date): number {
 }
 
 async function hmacSha256Hex(secret: string, data: Uint8Array): Promise<string> {
-  if (!globalThis.crypto?.subtle) {
-    throw new Error("Web Crypto API is not available in this environment");
+  if (globalThis.crypto?.subtle) {
+    const key = await globalThis.crypto.subtle.importKey(
+      "raw",
+      ENCODER.encode(secret) as unknown as BufferSource,
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+
+    const signature = await globalThis.crypto.subtle.sign("HMAC", key, data as unknown as BufferSource);
+    return bytesToHex(new Uint8Array(signature));
   }
 
-  const key = await globalThis.crypto.subtle.importKey(
-    "raw",
-    ENCODER.encode(secret) as unknown as BufferSource,
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-
-  const signature = await globalThis.crypto.subtle.sign("HMAC", key, data as unknown as BufferSource);
-  return bytesToHex(new Uint8Array(signature));
+  const { createHmac } = await import("node:crypto");
+  return createHmac("sha256", secret).update(data).digest("hex");
 }
 
 function bytesToHex(bytes: Uint8Array): string {
