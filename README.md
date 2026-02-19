@@ -5,7 +5,7 @@ TypeScript SDK for the Linq Partner API.
 ## Installation
 
 ```bash
-npm install linq-partner-js
+npm install @OWNER/linq-partner-js --registry=https://npm.pkg.github.com
 ```
 
 ## Quick start
@@ -53,11 +53,17 @@ GitHub Actions runs CI on pull requests and pushes to `main`:
 
 ## Publishing
 
-Publishing is automated via `.github/workflows/publish.yml` on tag pushes like `v0.1.0` or manual `workflow_dispatch`.
+Publishing is automated via `/Users/ericlewis/Developer/linq-partner-js/.github/workflows/publish.yml` on tag pushes like `v0.1.0` or manual `workflow_dispatch`.
 
 Requirements:
-- Add repo secret `NPM_TOKEN` (npm automation token)
+- No extra token setup required for package publish in Actions (uses `GITHUB_TOKEN`)
 - Ensure `package.json` version matches the tag version (workflow validates this)
 
 Local publish safety:
 - `prepublishOnly` runs typecheck, tests, and build before publish.
+
+Release outputs:
+- Publishes package to GitHub Packages (`npm.pkg.github.com`) as `@<repo-owner>/linq-partner-js`
+- Creates a GitHub Release for tag runs and uploads:
+  - packed npm artifact (`.tgz`)
+  - `openapi/v3-reference.yaml`
