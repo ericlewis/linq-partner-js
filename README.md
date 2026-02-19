@@ -5,7 +5,7 @@ TypeScript SDK for the Linq Partner API.
 ## Installation
 
 ```bash
-npm install @OWNER/linq-partner-js --registry=https://npm.pkg.github.com
+npm install @ericlewis/linq-partner-js --registry=https://npm.pkg.github.com
 ```
 
 ## Quick start
