@@ -11,7 +11,7 @@ npm install @ericlewis/linq-partner-js --registry=https://npm.pkg.github.com
 ## Quick start
 
 ```ts
-import { LinqPartnerClient } from "linq-partner-js";
+import { LinqPartnerClient } from "@ericlewis/linq-partner-js";
 
 const client = new LinqPartnerClient({
   apiKey: process.env.LINQ_API_KEY!
@@ -53,17 +53,29 @@ GitHub Actions runs CI on pull requests and pushes to `main`:
 
 ## Publishing
 
-Publishing is automated via `/Users/ericlewis/Developer/linq-partner-js/.github/workflows/publish.yml` on tag pushes like `v0.1.0` or manual `workflow_dispatch`.
+Releases are automated by `.github/workflows/publish.yml`.
 
-Requirements:
-- No extra token setup required for package publish in Actions (uses `GITHUB_TOKEN`)
-- Ensure `package.json` version matches the tag version (workflow validates this)
+### Publish a release
 
-Local publish safety:
-- `prepublishOnly` runs typecheck, tests, and build before publish.
+1. Update `package.json` version.
+2. Commit and push to `main`.
+3. Create and push a tag that matches the version:
 
-Release outputs:
-- Publishes package to GitHub Packages (`npm.pkg.github.com`) as `@<repo-owner>/linq-partner-js`
-- Creates a GitHub Release for tag runs and uploads:
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+### What the publish workflow does
+
+- Runs typecheck, tests, and build.
+- Verifies tag version matches `package.json` version.
+- Publishes to GitHub Packages (`npm.pkg.github.com`) as `@ericlewis/linq-partner-js`.
+- Creates a GitHub Release and uploads:
   - packed npm artifact (`.tgz`)
   - `openapi/v3-reference.yaml`
+
+### Notes
+
+- Uses `GITHUB_TOKEN` for GitHub Packages publish (no npm token needed).
+- `prepublishOnly` also enforces local safety checks before publish.
